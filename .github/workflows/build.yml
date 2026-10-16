@@ -1,0 +1,39 @@
+# Builds every die with OpenSCAD so a broken source never lands unnoticed.
+# On a published release, the STL zips are rebuilt from the tagged commit and attached.
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openscad fonts-liberation2 zip
+          openscad --version
+      - name: Build STLs
+        run: tools/build.sh --ink
+      - name: Package
+        run: tools/package.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: story-dice-stl
+          path: out/*.zip
+      - name: Attach to release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" out/*.zip --clobber
