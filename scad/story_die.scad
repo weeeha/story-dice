@@ -6,7 +6,7 @@
 // icons    Phosphor Fill icon names; the file is <icon_dir>/<name>-fill.svg
 // labels   one word per face, "" for none; words too wide for the face are
 //          condensed to fit
-// labelled false = icons only, 1.45x larger and centred (prints on a 0.4 mm nozzle)
+// labelled false = icons only, 1.45x larger, no words (prints on a 0.4 mm nozzle)
 // part     "body" = the die with recessed artwork
 //          "ink"  = just the 0.6 mm inlays, for a second filament colour
 // colors   [body, ink] for previews only; STL export ignores colour
@@ -34,15 +34,15 @@ function story_shape(name) =
 
 module story_die(shape, icons, labels, labelled = true, part = "body",
                  font = "Liberation Sans:style=Bold", icon_dir = "../icons",
-                 rr = 1.0, depth = 0.6, icon_only_scale = 1.45,
+                 rr = 1.0, depth = 0.6,
                  colors = ["SteelBlue", "Orange"]) {
   $fn = 32;
   S = story_shape(shape);
   V = S[1]; F = S[2]; K = S[3];
   assert(len(icons) == len(F), str(shape, " has ", len(F), " faces, got ", len(icons), " icons"));
-  glyph = labelled ? S[4] : S[4] * icon_only_scale;
+  glyph = labelled ? S[4] : S[9];
   tsize = S[5];
-  iy = labelled ? S[6] : 0;
+  iy = labelled ? S[6] : S[10];
   ty = S[7];
   lw = S[8];
 
@@ -60,8 +60,11 @@ module story_die(shape, icons, labels, labelled = true, part = "body",
       translate([0, 0, -depth]) linear_extrude(height = depth + 0.6) {
         // offset() fuses icon parts that only touch at an edge (Phosphor's tree
         // does this); without it CGAL rejects the mesh as not closed.
-        translate([0, iy, 0]) offset(delta = 0.01) resize([glyph, glyph, 0], auto = true)
-          import(str(icon_dir, "/", icons[i], "-fill.svg"), center = true);
+        // Phosphor draws on a 256-unit grid and a full-width icon spans 240 units.
+        // Scale that grid, not each icon's outline: resizing outlines to a square
+        // stretched every icon that isn't square. dpi = 25.4 imports 1 unit as 1 mm.
+        translate([0, iy, 0]) offset(delta = 0.01) scale(glyph / 240) translate([-128, -128])
+          import(str(icon_dir, "/", icons[i], "-fill.svg"), dpi = 25.4);
         if (labelled && labels[i] != "")
           translate([0, ty, 0]) scale([min(1, lw / label_width(labels[i], tsize)), 1])
             text(labels[i], size = tsize, font = font, halign = "center", valign = "center");

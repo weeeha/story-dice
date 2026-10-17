@@ -43,7 +43,8 @@ Each release has two zips, one per set. Every die comes as a body
 
 - **labelled**: icon plus a word on every face. The letter strokes are about
   0.5 mm wide, so this set needs a 0.2 mm nozzle.
-- **icons**: no words, icons 1.45 times larger and centred. Prints on a 0.4 mm nozzle.
+- **icons**: no words, icons 1.45 times larger. On Want they sit towards the
+  wide end of each kite so they clear the edges. Prints on a 0.4 mm nozzle.
 
 The artwork is recessed 0.6 mm into each face. To colour it, fill the recesses
 with acrylic paint and wipe the face clean. White ink reads well on the dark
@@ -66,6 +67,10 @@ Everything is plain [OpenSCAD](https://openscad.org) (2021.01 or newer).
   STL to `out/`. Add `--png` for previews. If `openscad` isn't on your PATH,
   set `OPENSCAD=/path/to/openscad`. A full build takes a while; `--only want`
   builds one die.
+- **Check a change**: after `tools/build.sh --ink`, run
+  `python3 tools/icon_audit.py`. It lists faces whose detail is too fine for
+  the nozzle or whose artwork runs off the face, and draws every face to
+  `out/audit/` so you can see which icons read. Needs numpy and Pillow.
 - **Change or add a shape**: edit `tools/face_tables.py` and run it. It
   regenerates `scad/shapes.scad` and needs Python with numpy.
 
@@ -80,7 +85,8 @@ polyhedron, which rounds every edge by 1 mm. For each face,
 top should point and the face's distance from the centre. The OpenSCAD library
 in `scad/story_die.scad` uses that frame to cut an icon and a label into every
 face. Each solid is scaled so its faces have the same 8 mm inscribed radius,
-which keeps the icons one size across the kit.
+which keeps the icons one size across the kit. Icons are scaled on Phosphor's
+256-unit grid, so each keeps its proportions and its size next to the others.
 
 The generator also works out how much room each face leaves for a label. Cube
 artwork runs square to the edges, and on the d10 the stack slides towards the
