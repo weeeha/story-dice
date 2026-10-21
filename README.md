@@ -1,5 +1,7 @@
 # Story Dice
 
+![story-dice](brand/lockup-horizontal.svg)
+
 Ten 3D-printable dice that roll a story prompt. Each category fills one blank
 in a sentence. Roll them all and read it out.
 
