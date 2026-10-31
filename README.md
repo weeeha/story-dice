@@ -2,6 +2,14 @@
 
 ![story-dice](brand/lockup-horizontal.svg)
 
+**Problem.** A story prompt has nine parts (setting, character, object, action, conflict, emotion, want, twist, resolution), and decks of different sizes do not fit one kind of die without cutting them to six faces.
+
+**Idea.** Each category fills one blank in a sentence and gets the die shape that fits its vocabulary. Roll them all and read the prompt out.
+
+**Built.** Ten 3D-printable dice in two sets, labelled (0.2 mm nozzle) and icon-only (0.4 mm nozzle), generated from OpenSCAD sources and a Python face-table tool. Designed and rendered, not yet test-printed. 7 commits on 4 days, Oct 16 to Oct 25, 2026.
+
+**Decision.** Each category gets its own die shape, from d6 to d12, instead of cutting every deck down to six faces. Larger decks make larger dice.
+
 Ten 3D-printable dice that roll a story prompt. Each category fills one blank
 in a sentence. Roll them all and read it out.
 
